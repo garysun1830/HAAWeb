@@ -22,56 +22,44 @@
                 <b-input v-model="lang"></b-input>
               </b-field>
             </td>
+            <td style="width: 20px"></td>
+            <td>
+              <div class="buttons">
+                <b-button class="submit-button" type="is-info" @click="submit()"
+                  >Submit
+                </b-button>
+              </div>
+            </td>
           </tr>
         </table>
+        <b-message
+          title="Health Authority Area"
+          type="is-success"
+          closable="false"
+          class="result-band"
+        >
+          {{ api_info }}
+        </b-message>
       </div>
-      <div class="buttons">
-        <b-button class="submit-button" type="is-info" @click="submit()"
-          >Submit
-        </b-button>
-      </div>
-      <b-notification type="is-info" aria-close-label="Close notification"
-        >{{ api_info }}
-      </b-notification>
     </div>
   </div>
 </template>
 
 <script>
 import api from "@/api";
-// import config from "../../vue.config";
-import axios from "axios";
 
 export default {
   name: "WebMain",
   data() {
     return {
-      lat: "",
-      lang: "",
+      lat: -123.3646335,
+      lang: 48.4251378,
       lat_type: "",
       lat_message: "",
       lang_type: "",
       lang_message: "",
-      api_info: "12343",
+      api_info: "N/A",
     };
-  },
-  mounted() {
-    // axios
-    //   .get("https://api.coindesk.com/v1/bpi/currentprice.json")
-    //   .then((response) => {
-    //     this.api_info = response.data.disclaimer;
-    //   })
-    //   .catch((error) => {
-    //     alert(error);
-    //   });
-    axios
-      .get("https://openmaps.gov.bc.ca/geo/pub/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=pub%3AWHSE_ADMIN_BOUNDARIES.BCHA_CMNTY_HEALTH_SERV_AREA_SP&srsname=EPSG%3A4326&cql_filter=INTERSECTS(SHAPE%2CSRID%3D4326%3BPOINT(-123.3646335+48.4251378))&propertyName=CMNTY_HLTH_SERV_AREA_CODE%2CCMNTY_HLTH_SERV_AREA_NAME&outputFormat=application%2Fjson")
-      .then((response) => {
-        this.api_info = response.data.features[0].properties.CMNTY_HLTH_SERV_AREA_NAME;
-      })
-      .catch((error) => {
-        alert(error);
-      });
   },
   components: {},
   methods: {
@@ -96,8 +84,14 @@ export default {
         this.lang_message = "";
       }
       if (!valid) return;
-      // var resp = api.call_api(this.lat, this.lang);
-      api.call_api();
+      // this.api_info = api.call_api(this.lat, this.lang);
+      this.api_info = api.call_api(
+        this.lat,
+        this.lang,
+        (response) =>
+          (this.api_info =
+            response.data.features[0].properties.CMNTY_HLTH_SERV_AREA_NAME)
+      );
     },
   },
 };
@@ -106,33 +100,19 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h1 {
-  font-size: 30px;
+  font-size: 24px;
   color: #e7e7e7;
-}
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
 }
 .page {
   background-color: #fff;
-  margin: auto 100px;
+  margin: auto;
   border: 1px solid #c7cab9;
+  width: 700px;
 }
 .main {
   padding: 0px 20px;
   margin: 12px 8px 8px 8px;
   min-height: 400px;
-  width: 700px;
 }
 .header {
   position: relative;
@@ -143,7 +123,7 @@ a {
   height: 60px;
 }
 .head-title {
-  padding-top: 8px;
+  padding-top: 12px;
 }
 .lat-input {
   margin-top: 40px;
@@ -151,9 +131,15 @@ a {
 }
 .submit-button {
   margin-top: 40px;
-  text-align: left;
+  width: 100px;
 }
 .error-band {
   width: 300px;
+}
+.result-band {
+  margin-top: 40px;
+}
+.buttons {
+  margin-top: -8px;
 }
 </style>
