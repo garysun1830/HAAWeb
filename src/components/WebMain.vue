@@ -65,14 +65,14 @@
 
 <script>
 import MapService from "../service/MapService.js";
-// import MapApi from "../data/api/MapApi.js";
+import Testor from "../test/test_project.js";
 
 export default {
   name: "WebMain",
   data() {
     return {
-      lat: -123.3646335,
-      lang: 48.4251378,
+      lat: null,
+      lang: null,
       lat_type: "",
       lat_message: "",
       lang_type: "",
@@ -90,41 +90,14 @@ export default {
     this.test_mode = urlParams.has("test") && urlParams.get("test") == 1830;
   },
   methods: {
-    lookup_area_name(
-      lat,
-      lang,
-      on_success = undefined,
-      on_fail = undefined,
-      on_error = undefined
-    ) {
+    lookup_area_name(lat, lang) {
       let map_service = new MapService();
       map_service.LookupAreaName(
         lat,
         lang,
-        (area_name) => {
-          this.area_name = area_name;
-          this.show_error = false;
-          this.show_success = true;
-          if (on_success !== undefined) {
-            on_success(area_name);
-          }
-        },
-        (message) => {
-          this.api_error = message;
-          this.show_success = false;
-          this.show_error = true;
-          if (on_fail !== undefined) {
-            on_fail(message);
-          }
-        },
-        (error) => {
-          this.api_error = error;
-          this.show_success = false;
-          this.show_error = true;
-          if (on_error !== undefined) {
-            on_error(error);
-          }
-        }
+        (area_name) => this.show_area_name(area_name),
+        (message) => this.show_lookup_error(message),
+        (error) => this.show_lookup_error(error)
       );
     },
     submit() {
@@ -148,6 +121,16 @@ export default {
       if (!valid) return;
       this.lookup_area_name(this.lat, this.lang);
     },
+    show_area_name(area_name) {
+      this.area_name = area_name;
+      this.show_error = false;
+      this.show_success = true;
+    },
+    show_lookup_error(message) {
+      this.api_error = message;
+      this.show_success = false;
+      this.show_error = true;
+    },
     success_alert(message) {
       this.$buefy.dialog.alert(message);
     },
@@ -163,30 +146,22 @@ export default {
         ariaModal: true,
       });
     },
-     test_for_success(good_data) {
-     },
     test_submit_success() {
-      this.lookup_area_name(
-        -123.3646335,
-        48.4251378,
-        (name) => {
-          if (name === "Downtown Victoria/Vic West") {
-            this.success_alert("Passed!");
-          } else {
-            this.fail_alert("Failed!");
-          }
-        },
-        () => this.fail_alert("Failed!"),
-        () => this.fail_alert("Failed!")
+      let testor = new Testor();
+      testor.test_for_success(
+        this.show_area_name,
+        this.show_lookup_error,
+        this.success_alert,
+        this.fail_aler
       );
     },
     test_submit_fail() {
-      this.lookup_area_name(
-        -123.3646335,
-        148.4251378,
-        () => this.fail_alert("Failed!"),
-        () => this.success_alert("Passed!"),
-        () => this.fail_alert("Failed!")
+      let testor = new Testor();
+      testor.test_for_fail(
+        this.show_area_name,
+        this.show_lookup_error,
+        this.success_alert,
+        this.fail_aler
       );
     },
   },

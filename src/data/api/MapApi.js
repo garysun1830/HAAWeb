@@ -5,7 +5,7 @@ import config from "../../../vue.config";
 export default class MAPApi {
 
     constructor() {
-        this.api_root_url = config.pluginOptions.API_ROOT + "2";
+        this.api_root_url = config.pluginOptions.API_ROOT;
     }
 
     convert_lat_lang(value) {
@@ -24,7 +24,7 @@ export default class MAPApi {
                     }
                     catch (error) {
                         if (error.message.indexOf("Cannot read property 'properties'") !== -1) {
-                            on_fail("Invalid B.C. location");
+                            on_fail("Invalid B.C. location.");
                         }
                     }
                 } else {
