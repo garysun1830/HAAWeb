@@ -1,8 +1,9 @@
 // vue.config.js
 module.exports = {
     pluginOptions: {
-        API_ROOT:"https://openmaps.gov.bc.ca/geo/pub/",
-        API_LOOKUP_AREA_NAME:"ows?service=WFS&version=1.0.0&request=GetFeature&typeName=pub%3AWHSE_ADMIN_BOUNDARIES.BCHA_CMNTY_HEALTH_SERV_AREA_SP&srsname=EPSG%3A4326&cql_filter=INTERSECTS(SHAPE%2CSRID%3D4326%3BPOINT({lat_lang}))&propertyName=CMNTY_HLTH_SERV_AREA_CODE%2CCMNTY_HLTH_SERV_AREA_NAME&outputFormat=application%2Fjson",
-        
+        API_ROOT: "https://openmaps.gov.bc.ca/geo/pub/ows",
+        API_LOOKUP_AREA_NAME: "?service=WFS&version=1.0.0&request=GetFeature&typeName=pub%3AWHSE_ADMIN_BOUNDARIES.BCHA_CMNTY_HEALTH_SERV_AREA_SP&srsname=EPSG%3A4326&cql_filter=INTERSECTS(SHAPE%2CSRID%3D4326%3BPOINT({lat_lang}))&propertyName=CMNTY_HLTH_SERV_AREA_CODE%2CCMNTY_HLTH_SERV_AREA_NAME&outputFormat=application%2Fjson",
+        API_ROOT2: "http://localhost:57021/api/haa/",
+        API_GET_REQUEST_COUNT: "RequestCount/LookupName",
     }
 }

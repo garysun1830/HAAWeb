@@ -58,6 +58,11 @@
             >Test Submit Bad</b-button
           >
         </div>
+        <div class="buttons test-band" v-if="test_mode">
+          <b-button type="is-primary" @click="test_request_count()"
+            >Test Request Count</b-button
+          >
+        </div>
       </div>
     </div>
   </div>
@@ -107,18 +112,22 @@ export default {
       );
     },
     submit() {
-      var valid = true;
-      if (!this.lat || isNaN(this.lat)) {
+      this.show_success = false;
+      this.show_error = false;
+      let valid = true;
+      var val_result = this.map_service.validate_pos(this.lat);
+      if (!val_result.valid) {
         this.lat_type = "is-danger";
-        this.lat_message = "Please enter a number.";
+        this.lat_message = val_result.message;
         valid = false;
       } else {
         this.lat_type = "";
         this.lat_message = "";
       }
-      if (!this.lang || isNaN(this.lang)) {
+      val_result = this.map_service.validate_pos(this.lang);
+      if (!val_result.valid) {
         this.lang_type = "is-danger";
-        this.lang_message = "Please enter a number.";
+        this.lang_message = val_result.message;
         valid = false;
       } else {
         this.lang_type = "";
@@ -169,6 +178,10 @@ export default {
         this.success_alert,
         this.fail_alert
       );
+    },
+    test_request_count() {
+      let testor = new Testor(this.logger);
+      testor.test_request_count(this.success_alert, this.fail_alert);
     },
   },
 };

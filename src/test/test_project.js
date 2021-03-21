@@ -70,4 +70,15 @@ export default class Testor {
             }
         );
     }
+
+    test_request_count(success_alert, fail_alert) {
+        var result = false;
+        if (result) {
+            success_alert("Passed!");
+        } else {
+            fail_alert
+            fail_alert("Failed!");
+        }
+    }
+
 }

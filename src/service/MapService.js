@@ -16,4 +16,16 @@ export default class MapService {
         }
     }
 
+    validate_pos(pos_val) {
+        var result = { valid: false };
+        if (!pos_val || isNaN(pos_val)) {
+            result.message = "Please enter a number.";
+            return result;
+        }
+        if (pos_val < -180 || pos_val > 180) {
+            result.message = "Please enter a valid map position.";
+            return result;
+        }
+        return { valid: true };
+    }
 }
