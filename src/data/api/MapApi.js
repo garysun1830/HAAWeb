@@ -4,8 +4,9 @@ import config from "../../../vue.config";
 
 export default class MAPApi {
 
-    constructor() {
+    constructor(logger) {
         this.api_root_url = config.pluginOptions.API_ROOT;
+        this.logger = logger;
     }
 
     convert_lat_lang(value) {
@@ -19,19 +20,25 @@ export default class MAPApi {
             .then((response) => {
                 if (response.status == 200) {
                     try {
-                        let area_name = response.data.features[0].properties.CMNTY_HLTH_SERV_AREA_NAME;
-                        on_success(area_name);
-                    }
-                    catch (error) {
-                        if (error.message.indexOf("Cannot read property 'properties'") !== -1) {
-                            on_fail("Invalid B.C. location.");
+                        if (response.data.features.length === 0) {
+                            on_fail("Invalid B.C. location. Please confirm your map position is within the B.C. Province.");
+                        }
+                        else {
+                            let area_name = response.data.features[0].properties.CMNTY_HLTH_SERV_AREA_NAME;
+                            on_success(area_name);
                         }
                     }
+                    catch (error) {
+                        this.logger.log("error", error.message);
+                        on_error("Oops. Something Went Wrong. Please try again later.");
+                    }
                 } else {
+                    this.logger.log("error", response);
                     on_fail(response);
                 }
             })
-            .catch(() => {
+            .catch((error) => {
+                this.logger.log("error", error.message);
                 on_error("Oops. Something Went Wrong. Please try again later.");
             });
     }

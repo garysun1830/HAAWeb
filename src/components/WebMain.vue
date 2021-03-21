@@ -66,6 +66,7 @@
 <script>
 import MapService from "../service/MapService.js";
 import Testor from "../test/test_project.js";
+import Logger from "../log/logger.js";
 
 export default {
   name: "WebMain",
@@ -82,17 +83,22 @@ export default {
       test_mode: false,
       show_success: false,
       show_error: false,
+      map_service: null,
+      logger: null,
     };
   },
   components: {},
+  created() {
+    this.logger = new Logger("haa_lookup_name_log");
+    this.map_service = new MapService(this.logger);
+  },
   mounted() {
     let urlParams = new URLSearchParams(window.location.search);
     this.test_mode = urlParams.has("test") && urlParams.get("test") == 1830;
   },
   methods: {
     lookup_area_name(lat, lang) {
-      let map_service = new MapService();
-      map_service.LookupAreaName(
+      this.map_service.LookupAreaName(
         lat,
         lang,
         (area_name) => this.show_area_name(area_name),
@@ -147,21 +153,21 @@ export default {
       });
     },
     test_submit_success() {
-      let testor = new Testor();
+      let testor = new Testor(this.logger);
       testor.test_for_success(
         this.show_area_name,
         this.show_lookup_error,
         this.success_alert,
-        this.fail_aler
+        this.fail_alert
       );
     },
     test_submit_fail() {
-      let testor = new Testor();
+      let testor = new Testor(this.logger);
       testor.test_for_fail(
         this.show_area_name,
         this.show_lookup_error,
         this.success_alert,
-        this.fail_aler
+        this.fail_alert
       );
     },
   },

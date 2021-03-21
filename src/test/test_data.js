@@ -9,7 +9,10 @@ export default class TestData {
                 "pos": [-123.318038, 48.481532], "name": "Gordon Head/Shelbourne"
             },
             {
-                "pos": [-123.403437, 48.468152], "name": "Interurban/Tillicum3"
+                "pos": [-123.403437, 48.468152], "name": "Interurban/Tillicum"
+            },
+            {
+                "pos": [-122.947038, 49.225368], "name": "Burnaby Southeast"
             },
         ];
         this.bad_data = [

@@ -3,8 +3,8 @@ import TestData from "./test_data.js";
 
 export default class Testor {
 
-    constructor() {
-        this.map_service = new MapService();
+    constructor(logger) {
+        this.map_service = new MapService(logger);
         this.test_data = new TestData();
         this.loop_id = 0;
         this.failed = false;
@@ -18,6 +18,7 @@ export default class Testor {
                 //looping end, if not fail, display "passed".
                 show_area_name("All names retrieved successfully.")
                 success_alert("Passed!");
+                return;
             }
         }
         let good_data = this.test_data.good_data[this.loop_id++];
