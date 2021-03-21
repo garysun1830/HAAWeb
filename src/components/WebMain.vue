@@ -35,18 +35,37 @@
         <b-message
           title="Health Authority Area"
           type="is-success"
-          closable="false"
+          :closable="false"
           class="result-band"
+          v-if="show_success"
         >
-          {{ api_info }}
+          {{ area_name }}
         </b-message>
+        <b-message
+          title="Error"
+          type="is-danger"
+          :closable="false"
+          class="result-band"
+          v-if="show_error"
+        >
+          {{ api_error }}
+        </b-message>
+        <div class="buttons test-band" v-if="test_mode">
+          <b-button type="is-primary" @click="test_submit_success()"
+            >Test Submit Good</b-button
+          >
+          <b-button type="is-primary" @click="test_submit_fail()"
+            >Test Submit Bad</b-button
+          >
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import api from "@/api";
+import MapService from "../service/MapService.js";
+// import MapApi from "../data/api/MapApi.js";
 
 export default {
   name: "WebMain",
@@ -58,14 +77,57 @@ export default {
       lat_message: "",
       lang_type: "",
       lang_message: "",
-      api_info: "N/A",
+      area_name: "N/A",
+      api_error: "",
+      test_mode: false,
+      show_success: false,
+      show_error: false,
     };
   },
   components: {},
+  mounted() {
+    let urlParams = new URLSearchParams(window.location.search);
+    this.test_mode = urlParams.has("test") && urlParams.get("test") == 1830;
+  },
   methods: {
+    lookup_area_name(
+      lat,
+      lang,
+      on_success = undefined,
+      on_fail = undefined,
+      on_error = undefined
+    ) {
+      let map_service = new MapService();
+      map_service.LookupAreaName(
+        lat,
+        lang,
+        (area_name) => {
+          this.area_name = area_name;
+          this.show_error = false;
+          this.show_success = true;
+          if (on_success !== undefined) {
+            on_success(area_name);
+          }
+        },
+        (message) => {
+          this.api_error = message;
+          this.show_success = false;
+          this.show_error = true;
+          if (on_fail !== undefined) {
+            on_fail(message);
+          }
+        },
+        (error) => {
+          this.api_error = error;
+          this.show_success = false;
+          this.show_error = true;
+          if (on_error !== undefined) {
+            on_error(error);
+          }
+        }
+      );
+    },
     submit() {
-      // const OFI_Url = config.pluginOptions.API_GET_NAME;
-      // alert(OFI_Url);
       var valid = true;
       if (!this.lat || isNaN(this.lat)) {
         this.lat_type = "is-danger";
@@ -84,13 +146,47 @@ export default {
         this.lang_message = "";
       }
       if (!valid) return;
-      // this.api_info = api.call_api(this.lat, this.lang);
-      this.api_info = api.call_api(
-        this.lat,
-        this.lang,
-        (response) =>
-          (this.api_info =
-            response.data.features[0].properties.CMNTY_HLTH_SERV_AREA_NAME)
+      this.lookup_area_name(this.lat, this.lang);
+    },
+    success_alert(message) {
+      this.$buefy.dialog.alert(message);
+    },
+    fail_alert(message) {
+      this.$buefy.dialog.alert({
+        title: "Error",
+        message: message,
+        type: "is-danger",
+        hasIcon: true,
+        icon: "times-circle",
+        iconPack: "fa",
+        ariaRole: "alertdialog",
+        ariaModal: true,
+      });
+    },
+     test_for_success(good_data) {
+     },
+    test_submit_success() {
+      this.lookup_area_name(
+        -123.3646335,
+        48.4251378,
+        (name) => {
+          if (name === "Downtown Victoria/Vic West") {
+            this.success_alert("Passed!");
+          } else {
+            this.fail_alert("Failed!");
+          }
+        },
+        () => this.fail_alert("Failed!"),
+        () => this.fail_alert("Failed!")
+      );
+    },
+    test_submit_fail() {
+      this.lookup_area_name(
+        -123.3646335,
+        148.4251378,
+        () => this.fail_alert("Failed!"),
+        () => this.success_alert("Passed!"),
+        () => this.fail_alert("Failed!")
       );
     },
   },
@@ -141,5 +237,8 @@ h1 {
 }
 .buttons {
   margin-top: -8px;
+}
+.test-band {
+  margin-top: 40px;
 }
 </style>
