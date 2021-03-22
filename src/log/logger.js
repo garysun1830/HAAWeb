@@ -1,6 +1,7 @@
 
 export default class Logger {
-
+    //log message to the local storage
+    
     constructor(log_key) {
         this.log_key = log_key;
     }

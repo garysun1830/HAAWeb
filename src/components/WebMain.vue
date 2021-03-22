@@ -98,12 +98,15 @@ export default {
     this.map_service = new MapService(this.logger);
   },
   mounted() {
+    //read query parameters. test=1830 for testing. when in testing mode, UI shows the testing elements
     let urlParams = new URLSearchParams(window.location.search);
     this.test_mode = urlParams.has("test") && urlParams.get("test") == 1830;
   },
   methods: {
     lookup_area_name(lat, lang) {
-      this.map_service.LookupAreaName(
+      //map_service call REST API to lookup the HAA name by the given map postion
+      //providing event functions for UI displaying
+      this.map_service.lookup_area_name(
         lat,
         lang,
         (area_name) => this.show_area_name(area_name),
@@ -112,8 +115,11 @@ export default {
       );
     },
     submit() {
+      // the "Sbumit" button clicked.
+      // clear UI
       this.show_success = false;
       this.show_error = false;
+      // validate the user inputs as a map position
       let valid = true;
       var val_result = this.map_service.validate_pos(this.lat);
       if (!val_result.valid) {
@@ -134,6 +140,8 @@ export default {
         this.lang_message = "";
       }
       if (!valid) return;
+      // the map postion is valid.
+      //lookup for HAA name
       this.lookup_area_name(this.lat, this.lang);
     },
     show_area_name(area_name) {
@@ -162,6 +170,7 @@ export default {
       });
     },
     test_submit_success() {
+      //test the lookup name method and UI when given good map positions
       let testor = new Testor(this.logger);
       testor.test_for_success(
         this.show_area_name,
@@ -171,6 +180,7 @@ export default {
       );
     },
     test_submit_fail() {
+      //test the lookup name method and UI when given a bad map position
       let testor = new Testor(this.logger);
       testor.test_for_fail(
         this.show_area_name,
@@ -180,8 +190,13 @@ export default {
       );
     },
     test_request_count() {
+      //test the API of requesting the count of the LookupName API method called by the web clients
       let testor = new Testor(this.logger);
-      testor.test_request_count(this.success_alert, this.fail_alert);
+      testor.test_request_count(
+        this.show_area_name,
+        this.success_alert,
+        this.fail_alert
+      );
     },
   },
 };

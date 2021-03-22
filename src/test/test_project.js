@@ -1,10 +1,15 @@
 import MapService from "../service/MapService.js";
+import AdminService from "../service/AdminService.js";
 import TestData from "./test_data.js";
 
 export default class Testor {
+    //the application testor
+    //test the UI functionalities as a web user
+    //test to drive the development
 
     constructor(logger) {
         this.map_service = new MapService(logger);
+        this.admin_service = new AdminService(logger);
         this.test_data = new TestData();
         this.loop_id = 0;
         this.failed = false;
@@ -22,7 +27,7 @@ export default class Testor {
             }
         }
         let good_data = this.test_data.good_data[this.loop_id++];
-        this.map_service.LookupAreaName(
+        this.map_service.lookup_area_name(
             good_data.pos[0],
             good_data.pos[1],
             (name) => {
@@ -49,11 +54,13 @@ export default class Testor {
     }
 
     test_for_success(show_area_name, show_lookup_error, success_alert, fail_alert) {
+        //test the lookup name method and UI when given good map positions
         this.test_for_success_single(show_area_name, show_lookup_error, success_alert, fail_alert);
     }
 
     test_for_fail(show_area_name, show_lookup_error, success_alert, fail_alert) {
-        this.map_service.LookupAreaName(
+        //test the lookup name method and UI when given a bad map position
+        this.map_service.lookup_area_name(
             this.test_data.bad_data[0].pos[0],
             this.test_data.bad_data[0].pos[1],
             (name) => {
@@ -71,14 +78,21 @@ export default class Testor {
         );
     }
 
-    test_request_count(success_alert, fail_alert) {
-        var result = false;
-        if (result) {
-            success_alert("Passed!");
-        } else {
-            fail_alert
-            fail_alert("Failed!");
-        }
+    test_request_count(show_area_name, success_alert, fail_alert) {
+        //test the API of requesting the count of the LookupName API method called by the web clients
+        this.admin_service.get_request_count("LookupName",
+            (count) => {
+                if (count > 0) {
+                    show_area_name(`API Request Count: ${count}.`);
+                    success_alert("Passed!");
+
+                } else {
+                    fail_alert("Failed!");
+                }
+            },
+            () => fail_alert("Failed!"),
+            () => fail_alert("Failed!")
+        );
     }
 
 }
