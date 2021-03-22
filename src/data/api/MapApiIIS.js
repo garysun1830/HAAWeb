@@ -20,12 +20,12 @@ export default class MAPApiIIS {
                     if (response.data === undefined) {
                         this.logger.log("error", response);
                         on_fail(this.fail_message);
-                    } else if (response.data.HAAName === undefined) {
-                        this.logger.log("error", response.data);
+                    } else if (response.data.ClassName !== undefined && response.data.Message !== undefined) {
+                        this.logger.log("error", response.data.Message);
                         on_fail(this.fail_message);
                     }
                     else {
-                        on_success(response.data.HAAName);
+                        on_success(response.data);
                     }
                 } else {
                     this.logger.log("error", response);

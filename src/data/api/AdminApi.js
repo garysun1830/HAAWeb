@@ -18,7 +18,16 @@ export default class AdminApi {
         axios.get(api_url)
             .then((response) => {
                 if (response.status == 200) {
-                    on_success(response.data.RequestCount);
+                    if (response.data === undefined) {
+                        this.logger.log("error", response);
+                        on_fail(response);
+                    } else if (response.data.ClassName !== undefined && response.data.Message !== undefined) {
+                        this.logger.log("error", response.data.Message);
+                        on_fail(response);
+                    }
+                    else {
+                        on_success(response.data);
+                    }
                 } else {
                     this.logger.log("error", response);
                     on_fail(response);
