@@ -14,8 +14,7 @@
     - Ceate each Jenkins Pipeline for Test and Production.
     - This Pipeline configures to checkout the source code from this Github repository to the folder on the server node.
     - This is the Pipeline syntax:
-    - 
-      node('ServerNode') {
+      - node('ServerNode') {
       stage('git_checkout') {
         checkout(
           [
