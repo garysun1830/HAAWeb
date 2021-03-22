@@ -6,6 +6,8 @@
 - ## the server URL is configured in vue.config.js
 - ## this web application is created with Vue.js 3.0 
 - ## this web application is test driven. use "test=1830" to turn on the test UI
+- ## for development and testing, the souce code can checkout from this repository to Windows envioronment. 
+- ## Visual Studio Code is the development and testing tool.
 # Release Code from Dev to the Test and Production environment
 1. Copy files:
   - Copy the whole source code folder to the folder on the server, accordingly.
