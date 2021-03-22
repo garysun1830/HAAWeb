@@ -46,7 +46,7 @@
 # Continiously Release  
   - Create Jenkins Pipelines
   - Configure the Pipelines to trigger building by the repository changes, or with schedules
-# Firewall Blocks The REST API Issue
+# Issues Of REST API Server Blocked By Firewalls
   - The REST API server for this web application is host at http://84521.ddns.com, which is blocked by many firewalls.
   - When this web application fails with network connection issues, please disconnect from the VPN network.
   - Within our BC government network, even without VPN connection, it is still blocked. Please try to use a public network, such as a home Shaw or Telus networks.
