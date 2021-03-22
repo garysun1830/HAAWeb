@@ -42,7 +42,7 @@
           }
       }
     }
-  - Run Pipeline/Build using the "Build" button, accordingly.
+  - Run Pipeline/Build using the "Build Now" button, accordingly.
 # Continiously Release  
   - Create Jenkins Pipelines
   - Configure the Pipelines to trigger building by the repository changes, or with schedules
