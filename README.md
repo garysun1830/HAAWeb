@@ -12,8 +12,38 @@
 2. Using Jenkins:
   - For 1st time release:
     - Ceate each Jenkins Pipeline for Test and Production.
-    - This Pipeline configures to get the source code from this Github repository.
-    - The workflow configures to run the Pipeline command to pull the source code to the folder that Server specifies on the server,  accordingly.
+    - This Pipeline configures to checkout the source code from this Github repository to the folder on the server node.
+    - This is the Pipeline syntax:
+    - 
+      node('ServerNode') {
+      stage('git_checkout') {
+        checkout(
+          [
+            $class: 'GitSCM', 
+            branches: [[name: '*/master']], 
+            doGenerateSubmoduleConfigurations: false, 
+            extensions: [
+              [
+                $class: 'RelativeTargetDirectory', 
+                relativeTargetDir: 'HAAWeb'
+              ]
+            ], 
+            submoduleCfg: [], 
+            userRemoteConfigs: [
+              [
+                url: 'https://github.com/garysun1830/HAAWeb.git'
+              ]
+            ]
+          ]
+        )		
+      }
+      stage('sonar') {
+          withSonarQubeEnv {
+      // some block
+          }
+      }
+    }
+    - The Pileline configures to run the Pipeline command to pull the source code to the folder that Server specifies on the server,  accordingly.
   - Run Pipeline/Build using the "Build" button, accordingly.
 # Continiously Release  
   - Create Jenkins Pipelines
