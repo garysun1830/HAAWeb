@@ -1,0 +1,29 @@
+node('ServerNode') {
+    stage('git_checkout') {
+		checkout(
+			[
+				$class: 'GitSCM', 
+				branches: [[name: '*/master']], 
+				doGenerateSubmoduleConfigurations: false, 
+				extensions: [
+					[
+						$class: 'RelativeTargetDirectory', 
+						relativeTargetDir: 'HAAWeb'
+					]
+				], 
+				submoduleCfg: [], 
+				userRemoteConfigs: [
+					[
+						url: 'https://github.com/garysun1830/HAAWeb.git'
+					]
+				]
+			]
+		)		
+    }
+    stage('sonar') {
+        withSonarQubeEnv {
+    // some block
+        }
+    }
+}
+
