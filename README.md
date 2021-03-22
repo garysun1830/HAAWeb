@@ -42,7 +42,6 @@
           }
       }
     }
-    - The Pileline configures to run the Pipeline command to pull the source code to the folder that Server specifies on the server,  accordingly.
   - Run Pipeline/Build using the "Build" button, accordingly.
 # Continiously Release  
   - Create Jenkins Pipelines
